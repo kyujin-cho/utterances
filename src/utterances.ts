@@ -1,4 +1,4 @@
-import { pageAttributes as page } from './page-attributes';
+import { pageAttributes as page } from "./page-attributes";
 import {
   Issue,
   setRepoContext,
@@ -10,14 +10,14 @@ import {
   createIssue,
   PAGE_SIZE,
   IssueComment
-} from './github';
-import { TimelineComponent } from './timeline-component';
-import { NewCommentComponent } from './new-comment-component';
-import { startMeasuring, scheduleMeasure } from './measure';
-import { loadTheme } from './theme';
-import { getRepoConfig } from './repo-config';
-import { loadToken } from './oauth';
-import { enableReactions } from './reactions';
+} from "./github";
+import { TimelineComponent } from "./timeline-component";
+import { NewCommentComponent } from "./new-comment-component";
+import { startMeasuring, scheduleMeasure } from "./measure";
+import { loadTheme } from "./theme";
+import { getRepoConfig } from "./repo-config";
+import { loadToken } from "./oauth";
+import { enableReactions } from "./reactions";
 
 setRepoContext(page);
 
@@ -34,7 +34,7 @@ async function bootstrap() {
   let [issue, user] = await Promise.all([
     loadIssue(),
     loadUser(),
-    loadTheme(page.theme, page.origin)
+    loadTheme(page.theme, page.darkTheme, page.origin)
   ]);
 
   startMeasuring(page.origin);
@@ -61,7 +61,7 @@ async function bootstrap() {
         page.issueTerm as string,
         page.url,
         page.title,
-        page.description || '',
+        page.description || "",
         page.label
       );
       timeline.setIssue(issue);
@@ -77,16 +77,19 @@ async function bootstrap() {
 
 bootstrap();
 
-addEventListener('not-installed', function handleNotInstalled() {
-  removeEventListener('not-installed', handleNotInstalled);
-  document.querySelector('.timeline')!.insertAdjacentHTML('afterbegin', `
+addEventListener("not-installed", function handleNotInstalled() {
+  removeEventListener("not-installed", handleNotInstalled);
+  document.querySelector(".timeline")!.insertAdjacentHTML(
+    "afterbegin",
+    `
   <div class="flash flash-error">
     Error: utterances is not installed on <code>${page.owner}/${page.repo}</code>.
     If you own this repo,
     <a href="https://github.com/apps/utterances" target="_top"><strong>install the app</strong></a>.
     Read more about this change in
     <a href="https://github.com/utterance/utterances/pull/25" target="_top">the PR</a>.
-  </div>`);
+  </div>`
+  );
   scheduleMeasure();
 });
 
@@ -130,7 +133,11 @@ async function renderComments(issue: Issue, timeline: TimelineComponent) {
       renderLoader(page);
     };
     const afterComment = afterPage.pop()!;
-    const loader = timeline.insertPageLoader(afterComment, hiddenPageCount * PAGE_SIZE, load);
+    const loader = timeline.insertPageLoader(
+      afterComment,
+      hiddenPageCount * PAGE_SIZE,
+      load
+    );
   };
   renderLoader(pages[0]);
 }
@@ -142,7 +149,9 @@ export async function assertOrigin() {
     return;
   }
 
-  document.querySelector('.timeline')!.lastElementChild!.insertAdjacentHTML('beforebegin', `
+  document.querySelector(".timeline")!.lastElementChild!.insertAdjacentHTML(
+    "beforebegin",
+    `
   <div class="flash flash-error flash-not-installed">
     Error: <code>${origin}</code> is not permitted to post to <code>${owner}/${repo}</code>.
     Confirm this is the correct repo for this site's comments. If you own this repo,
@@ -152,7 +161,8 @@ export async function assertOrigin() {
     to include <code>${origin}</code> in the list of origins.<br/><br/>
     Suggested configuration:<br/>
     <pre><code>${JSON.stringify({ origins: [origin] }, null, 2)}</code></pre>
-  </div>`);
+  </div>`
+  );
   scheduleMeasure();
-  throw new Error('Origin not permitted.');
+  throw new Error("Origin not permitted.");
 }
