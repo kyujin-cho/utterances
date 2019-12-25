@@ -5,14 +5,16 @@ export function loadTheme(
 ) {
   return new Promise(resolve => {
     const link = document.createElement("link");
+    const lightThemeCSS = `/stylesheets/themes/${theme}/utterances.css`;
+    const darkThemeCSS = `/stylesheets/themes/${darkTheme}/utterances.css`;
     link.rel = "stylesheet";
     link.setAttribute("crossorigin", "anonymous");
     link.onload = resolve;
-    link.href = `/stylesheets/themes/${theme}/utterances.css`;
+    link.href = (darkTheme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? darkThemeCSS : lightThemeCSS;
     document.head.appendChild(link);
 
     if (darkTheme) {
-      const mql = window.matchMedia("(prefer-color-scheme: dark)");
+      const mql = window.matchMedia("(prefers-color-scheme: dark)");
       mql.addEventListener("change", e => {
         if (e.matches) {
           link.href = `/stylesheets/themes/${darkTheme}/utterances.css`;

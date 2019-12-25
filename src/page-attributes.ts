@@ -7,8 +7,6 @@ function readPageAttributes() {
 
   let issueTerm: string | null = null;
   let issueNumber: number | null = null;
-  let theme: string | null = null;
-  let darkTheme: string | null = null;
 
   if ("issue-term" in params) {
     issueTerm = params["issue-term"];
@@ -49,13 +47,6 @@ function readPageAttributes() {
     token.value = params.token;
   }
 
-  if (params["dark-theme"]) {
-    if (!("theme" in params)) {
-      throw new Error('"theme" is required.');
-    }
-    theme = params["theme"];
-    darkTheme = params["dark-theme"];
-  }
   return {
     owner: matches[1],
     repo: matches[2],
@@ -66,8 +57,8 @@ function readPageAttributes() {
     title: params.title,
     description: params.description,
     label: params.label,
-    theme: theme || params.theme || "github-light",
-    darkTheme: darkTheme
+    theme: params.theme || "github-light",
+    darkTheme: params["dark-theme"]
   };
 }
 
