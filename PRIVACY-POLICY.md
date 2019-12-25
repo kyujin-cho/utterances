@@ -24,7 +24,7 @@ Utterances sets a cookie to store the github api token.
 
 We may employ third-party companies and individuals due to the following reasons:
 
-* Utterances uses GitHub issues to store issues and comments.
+- Utterances uses GitHub issues to store issues and comments.
 
 ## Security
 

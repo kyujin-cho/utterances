@@ -6,7 +6,7 @@ export class ConfigurationComponent {
   private readonly theme: HTMLSelectElement;
 
   constructor() {
-    this.element = document.createElement('form');
+    this.element = document.createElement("form");
     this.element.innerHTML = `
       <h3 id="heading-repository">Repository</h3>
       <p>
@@ -146,55 +146,76 @@ export class ConfigurationComponent {
       <br/>
       <br/>`;
 
-    this.element.addEventListener('submit', event => event.preventDefault());
-    this.element.action = 'javascript:';
+    this.element.addEventListener("submit", event => event.preventDefault());
+    this.element.action = "javascript:";
 
-    this.script = this.element.querySelector('#script') as HTMLDivElement;
+    this.script = this.element.querySelector("#script") as HTMLDivElement;
 
-    this.repo = this.element.querySelector('#repo') as HTMLInputElement;
+    this.repo = this.element.querySelector("#repo") as HTMLInputElement;
 
-    this.label = this.element.querySelector('#label') as HTMLInputElement;
+    this.label = this.element.querySelector("#label") as HTMLInputElement;
 
-    this.theme = this.element.querySelector('#theme') as HTMLSelectElement;
+    this.theme = this.element.querySelector("#theme") as HTMLSelectElement;
 
-    const themeStylesheet = document.getElementById('theme-stylesheet') as HTMLLinkElement;
-    this.theme.addEventListener('change', () => {
+    const themeStylesheet = document.getElementById(
+      "theme-stylesheet"
+    ) as HTMLLinkElement;
+    this.theme.addEventListener("change", () => {
       themeStylesheet.href = `/stylesheets/themes/${this.theme.value}/index.css`;
       const message = {
-        type: 'set-theme',
+        type: "set-theme",
         theme: this.theme.value
       };
-      const utterances = document.querySelector('iframe')!;
+      const utterances = document.querySelector("iframe")!;
       utterances.contentWindow!.postMessage(message, location.origin);
     });
 
-    const copyButton = this.element.querySelector('#copy-button') as HTMLButtonElement;
-    copyButton.addEventListener(
-      'click',
-      () => this.copyTextToClipboard(this.script.textContent as string));
+    const copyButton = this.element.querySelector(
+      "#copy-button"
+    ) as HTMLButtonElement;
+    copyButton.addEventListener("click", () =>
+      this.copyTextToClipboard(this.script.textContent as string)
+    );
 
-    this.element.addEventListener('change', () => this.outputConfig());
-    this.element.addEventListener('input', () => this.outputConfig());
+    this.element.addEventListener("change", () => this.outputConfig());
+    this.element.addEventListener("input", () => this.outputConfig());
     this.outputConfig();
   }
 
   private outputConfig() {
-    const mapping = this.element.querySelector('input[name="mapping"]:checked') as HTMLInputElement;
+    const mapping = this.element.querySelector(
+      'input[name="mapping"]:checked'
+    ) as HTMLInputElement;
     let mappingAttr: string;
     // tslint:disable-next-line:prefer-conditional-expression
-    if (mapping.value === 'issue-number') {
-      mappingAttr = this.makeConfigScriptAttribute('issue-number', '[ENTER ISSUE NUMBER HERE]');
-    } else if (mapping.value === 'specific-term') {
-      mappingAttr = this.makeConfigScriptAttribute('issue-term', '[ENTER TERM HERE]');
+    if (mapping.value === "issue-number") {
+      mappingAttr = this.makeConfigScriptAttribute(
+        "issue-number",
+        "[ENTER ISSUE NUMBER HERE]"
+      );
+    } else if (mapping.value === "specific-term") {
+      mappingAttr = this.makeConfigScriptAttribute(
+        "issue-term",
+        "[ENTER TERM HERE]"
+      );
     } else {
-      mappingAttr = this.makeConfigScriptAttribute('issue-term', mapping.value);
+      mappingAttr = this.makeConfigScriptAttribute("issue-term", mapping.value);
     }
     this.script.innerHTML = this.makeConfigScript(
-      this.makeConfigScriptAttribute('repo', this.repo.value === '' ? '[ENTER REPO HERE]' : this.repo.value) + '\n' +
-      mappingAttr + '\n' +
-      (this.label.value ? this.makeConfigScriptAttribute('label', this.label.value) + '\n' : '') +
-      this.makeConfigScriptAttribute('theme', this.theme.value) + '\n' +
-      this.makeConfigScriptAttribute('crossorigin', 'anonymous'));
+      this.makeConfigScriptAttribute(
+        "repo",
+        this.repo.value === "" ? "[ENTER REPO HERE]" : this.repo.value
+      ) +
+        "\n" +
+        mappingAttr +
+        "\n" +
+        (this.label.value
+          ? this.makeConfigScriptAttribute("label", this.label.value) + "\n"
+          : "") +
+        this.makeConfigScriptAttribute("theme", this.theme.value) +
+        "\n" +
+        this.makeConfigScriptAttribute("crossorigin", "anonymous")
+    );
   }
 
   private makeConfigScriptAttribute(name: string, value: string) {
@@ -204,20 +225,20 @@ export class ConfigurationComponent {
 
   private makeConfigScript(attrs: string) {
     // tslint:disable-next-line:max-line-length
-    return `<pre><span class="pl-s1">&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>https://utteranc.es/client.js<span class="pl-pds">"</span></span></span>\n${attrs}\n<span class="pl-s1">        <span class="pl-e">async</span>&gt;</span>\n<span class="pl-s1">&lt;/<span class="pl-ent">script</span>&gt;</span></pre>`;
+    return `<pre><span class="pl-s1">&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>https://utterances.bluehouse.dev/client.js<span class="pl-pds">"</span></span></span>\n${attrs}\n<span class="pl-s1">        <span class="pl-e">async</span>&gt;</span>\n<span class="pl-s1">&lt;/<span class="pl-ent">script</span>&gt;</span></pre>`;
   }
 
   private copyTextToClipboard(text: string) {
-    const textArea = document.createElement('textarea');
+    const textArea = document.createElement("textarea");
     // tslint:disable-next-line:max-line-length
     textArea.style.cssText = `position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:none;outline:none;box-shadow:none;background:transparent`;
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.select();
     try {
-      document.execCommand('copy');
+      document.execCommand("copy");
       // tslint:disable-next-line:no-empty
-    } catch (err) { }
+    } catch (err) {}
     document.body.removeChild(textArea);
   }
 }
