@@ -49,21 +49,13 @@ function readPageAttributes() {
     token.value = params.token;
   }
 
-  if (params.theme) {
-    if (params.theme === "darktheme") {
-      if (!("dark-theme" in params)) {
-        throw new Error('"dark-theme" is required.');
-      }
-      if (!("base-theme" in params)) {
-        throw new Error('"base-theme" is required.');
-      }
-      theme = params["base-theme"];
-      darkTheme = params["dark-theme"];
-    } else {
-      theme = params["theme"];
+  if (params["dark-theme"]) {
+    if (!("theme" in params)) {
+      throw new Error('"theme" is required.');
     }
+    theme = params["theme"];
+    darkTheme = params["dark-theme"];
   }
-
   return {
     owner: matches[1],
     repo: matches[2],
@@ -74,7 +66,7 @@ function readPageAttributes() {
     title: params.title,
     description: params.description,
     label: params.label,
-    theme: theme,
+    theme: theme || params.theme || "github-light",
     darkTheme: darkTheme
   };
 }
